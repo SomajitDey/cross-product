@@ -1,8 +1,10 @@
 !About:
-!This program describes how cross-product of two vectors may be
+!This program describes how the cross-product of two vectors may be
 !obtained using an (inline) array function which optimizes for speed.
 !
 !Author: Somajit Dey <sdphys_rs@caluniv.ac.in> January 2021
+!Copyright (C) 2021 Somajit Dey
+!License: GNU LGPL v2.1-or-later
 
 program crossproduct
 integer,dimension(3)::v1,v2,crossprod,expectation
