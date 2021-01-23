@@ -34,45 +34,32 @@ call output(matmul(matrix,inverted),tolerance=1E-8)
 contains
 
 function matrix_inv(matrix,determinant,is_invertible)
-
 real(8),dimension(3,3),intent(in)::matrix
 real(8),dimension(3,3)::matrix_inv
 real(8),intent(out),optional::determinant
 logical,optional::is_invertible
-
 real(8),dimension(3,3)::tmp1,tmp2,tmp
 real(8)::dotproduct
-real(8),parameter::tol=2*tiny(tol) !tolerance
-integer::i
-
+real(8),parameter::tol=2*tiny(tol) !Tolerance
 tmp1=cshift(matrix,1,2)
 tmp2=cshift(matrix,-1,2)
 tmp=cshift((cshift(tmp1,-1,1)*tmp2-tmp1*cshift(tmp2,-1,1)),-1,1)
+dotproduct=dot_product(tmp(:,1),matrix(:,1)) !Could be 2 or 3 instead of 1
+if(abs(dotproduct)>tol)then
+    matrix_inv=transpose(tmp)/dotproduct
+else
+    matrix_inv=0.0 !To return a null-matrix in case of non-invertibility
+endif
 
-!dotproduct should be the same for all i below as it is a box-product
-!Still we run the do loop to make sure round off errors don't creep in
-!Hopefully the concurrent do loop will take more or less the same time 
-!as one single-iteration
-do concurrent (i=1:3)
-    dotproduct=dot_product(tmp(:,i),matrix(:,i))
-    if(abs(dotproduct)>tol)then
-        tmp(:,i)=tmp(:,i)/dotproduct
-    else
-        tmp(:,i)=0.0
-    endif
-enddo
-
+!Optional extras follow:
 if(present(determinant))determinant=dotproduct
 if(present(is_invertible))then
     if(abs(dotproduct)>tol)then
         is_invertible=.true.
-    else    
+    else
         is_invertible=.false.
     endif
 endif
-
-matrix_inv=transpose(tmp)
-
 end function matrix_inv
 
 subroutine input(matrix)
