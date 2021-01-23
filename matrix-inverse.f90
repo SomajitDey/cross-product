@@ -37,7 +37,7 @@ function matrix_inv(matrix,determinant,is_invertible)
 real(8),dimension(3,3),intent(in)::matrix
 real(8),dimension(3,3)::matrix_inv
 real(8),intent(out),optional::determinant
-logical,optional::is_invertible
+logical,intent(out),optional::is_invertible
 real(8),dimension(3,3)::tmp1,tmp2,tmp
 real(8)::dotproduct
 real(8),parameter::tol=2*tiny(tol) !Tolerance
